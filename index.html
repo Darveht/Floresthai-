@@ -735,7 +735,7 @@
         <img src="/api/placeholder/400/320" alt="Ramo de Rosas Rojas" class="product-img" />
         <div class="product-info">
           <h3 class="product-title">Ramo de Rosas Rojas Premium</h3>
-          <p class="product-price">€45.99</p>
+          <p class="product-price">$45.99</p>
           <div class="product-rating">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12,2L15.5,9L22,9.5L17,14L18.5,21L12,17.5L5.5,21L7,14L2,9.5L8.5,9L12,2Z" />
@@ -779,7 +779,7 @@
         <img src="/api/placeholder/400/320" alt="Ramo de Girasoles" class="product-img" />
         <div class="product-info">
           <h3 class="product-title">Ramo de Girasoles Alegría</h3>
-          <p class="product-price">€39.99</p>
+          <p class="product-price">$39.99</p>
           <div class="product-rating">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12,2L15.5,9L22,9.5L17,14L18.5,21L12,17.5L5.5,21L7,14L2,9.5L8.5,9L12,2Z" />
@@ -820,7 +820,7 @@
         <img src="/api/placeholder/400/320" alt="Orquídeas Exóticas" class="product-img" />
         <div class="product-info">
           <h3 class="product-title">Orquídeas Exóticas</h3>
-          <p class="product-price">€59.99</p>
+          <p class="product-price">$59.99</p>
           <div class="product-rating">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12,2L15.5,9L22,9.5L17,14L18.5,21L12,17.5L5.5,21L7,14L2,9.5L8.5,9L12,2Z" />
@@ -830,7 +830,7 @@
             </svg>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12,2L15.5,9L22,9.5L17,14L18.5,21L12,17.5L5.5,21L7,14L2,9.5L8.5,9L12,2Z" />
-</svg>
+            </svg>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12,2L15.5,9L22,9.5L17,14L18.5,21L12,17.5L5.5,21L7,14L2,9.5L8.5,9L12,2Z" />
             </svg>
@@ -961,11 +961,161 @@
 
   <section class="cta-section" id="envios">
     <div class="cta-content">
-      <h2>Envío rápido y seguro</h2>
-      <p>Entregamos tus flores frescas el mismo día si realizas tu pedido antes de las 14:00h. Servicio disponible en toda la ciudad y alrededores.</p>
-      <button class="cta-secondary">Ver zonas de entrega</button>
+      <h2>Fast & Secure Delivery in Las Vegas</h2>
+      <p>Same-day delivery available for orders placed before 2:00 PM. Service available in Las Vegas and surrounding areas.</p>
+      <button class="cta-secondary" onclick="toggleDeliveryMap()">View Delivery Zones</button>
+    </div>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <div id="deliveryMapModal" class="delivery-map-modal">
+      <div class="delivery-map-content">
+        <span class="close-map">&times;</span>
+        <h3>Las Vegas Delivery Zones</h3>
+        <div id="vegas-map" class="vegas-map"></div>
+        <div class="delivery-info">
+          <h4 style="color: #333;">Delivery Times & Fees</h4>
+          <ul style="color: #333;">
+            <li>The Strip: 1-2 hours ($15)</li>
+            <li>Downtown: 2-3 hours ($12)</li>
+            <li>Summerlin: 2-4 hours ($18)</li>
+            <li>Henderson: 3-4 hours ($20)</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
+
+  <style>
+    .delivery-map-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+    }
+
+    .delivery-map-content {
+      background: white;
+      margin: 5% auto;
+      padding: 30px;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 15px;
+      position: relative;
+    }
+
+    .close-map {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .vegas-map {
+      height: 70vh;
+      border-radius: 10px;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .delivery-map-modal {
+      padding: 20px;
+    }
+
+    .delivery-map-content {
+      height: 95vh;
+      width: 95vw;
+      margin: 0 auto;
+    }
+
+    .delivery-info {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+
+    .delivery-info ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 10px;
+    }
+
+    .delivery-info li {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+
+  <script>
+    function toggleDeliveryMap() {
+      const modal = document.getElementById('deliveryMapModal');
+      modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('deliveryMapModal');
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    // Close modal when clicking X
+    document.querySelector('.close-map').onclick = function() {
+      document.getElementById('deliveryMapModal').style.display = 'none';
+    }
+
+    // Initialize Leaflet map
+    const map = L.map('vegas-map').setView([36.1699, -115.1398], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add delivery zones
+    const zones = [
+      { name: 'The Strip', coords: [36.1147, -115.1728], radius: 3000, fee: 15 },
+      { name: 'Downtown', coords: [36.1699, -115.1398], radius: 2500, fee: 12 },
+      { name: 'Summerlin', coords: [36.1971, -115.2975], radius: 4000, fee: 18 },
+      { name: 'Henderson', coords: [36.0395, -115.0020], radius: 5000, fee: 20 }
+    ];
+
+    zones.forEach(zone => {
+      // Add circle for delivery zone
+      const circle = L.circle(zone.coords, {
+        color: '#0070ba',
+        fillColor: '#0070ba',
+        fillOpacity: 0.2,
+        radius: zone.radius
+      }).addTo(map);
+
+      // Add marker with popup
+      L.marker(zone.coords)
+        .bindPopup(`
+          <b>${zone.name}</b><br>
+          Delivery Fee: $${zone.fee}<br>
+          Estimated Time: 1-3 hours
+        `)
+        .addTo(map);
+    });
+
+    // Recalculate map size when modal opens
+    function toggleDeliveryMap() {
+      const modal = document.getElementById('deliveryMapModal');
+      modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+      if (modal.style.display === 'block') {
+        setTimeout(() => map.invalidateSize(), 100);
+      }
+    }
+  </script>
 
   <footer id="contacto">
     <div class="footer-container">
@@ -1056,6 +1206,17 @@
 
     <div class="footer-bottom">
       <p>&copy; 2025 Rosas Eternas. Todos los derechos reservados.</p>
+      <div class="payment-methods">
+        <div class="payment-icon">
+          <img src="/api/placeholder/50/30" alt="Visa" />
+        </div>
+        <div class="payment-icon">
+          <img src="/api/placeholder/50/30" alt="Mastercard" />
+        </div>
+        <div class="payment-icon">
+          <img src="/api/placeholder/50/30" alt="Paypal" />
+        </div>
+      </div>
     </div>
   </footer>
 
@@ -1090,8 +1251,7 @@
         <button class="close-search">&times;</button>
       </div>
       <div class="search-filters">
-        <button class="filter-btn active" data-category="todos">Todos</button>
-        <button class="filter-btn" data-category="rosas">Rosas</button>
+        <button class="filter-btn active" data-category="todos">Todos</button<button class="filter-btn" data-category="rosas">Rosas</button>
         <button class="filter-btn" data-category="girasoles">Girasoles</button>
         <button class="filter-btn" data-category="orquideas">Orquídeas</button>
         <select class="sort-dropdown" id="sortProducts">
@@ -1292,7 +1452,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.5);
       z-index: 1000;
     }
 
@@ -1996,7 +2156,7 @@ function showProductDetails(name, price, image, description) {
     <li>Tarjeta personalizada</li>
     <li>Duración garantizada 7 días</li>
   `;
-  
+
   productModal.style.display = 'block';
   document.body.style.overflow = 'hidden';
   searchModal.style.display = 'none';
