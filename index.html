@@ -1259,12 +1259,15 @@
           @keyframes sendPlane {
             0% {
               transform: translate(0, 0) rotate(0);
+              opacity: 1;
             }
             50% {
-              transform: translate(100px, -100px) rotate(45deg);
+              transform: translate(150px, -150px) rotate(45deg);
+              opacity: 0.5;
             }
             100% {
-              transform: translate(200px, -200px) rotate(90deg);
+              transform: translate(300px, -300px) rotate(90deg);
+              opacity: 0;
             }
           }
           
@@ -1283,14 +1286,25 @@
         <script>
           document.getElementById('newsletterForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const form = this;
+            const input = form.querySelector('input');
             const btn = document.getElementById('submitNewsletter');
             const message = document.getElementById('subscriptionMessage');
             
+            if (input.value.trim() === '') {
+              return;
+            }
+            
             btn.classList.add('sending');
+            input.disabled = true;
+            btn.disabled = true;
             
             setTimeout(() => {
               message.classList.add('show');
               btn.classList.remove('sending');
+              form.reset();
+              input.disabled = false;
+              btn.disabled = false;
             }, 1000);
           });
         </script>
@@ -2441,6 +2455,296 @@ function showProductDetails(name, price, image, description) {
     }
 
     setInterval(createRose, 2000);
+  </script>
+<!-- Chat Widget -->
+  <div class="chat-icon" id="chatIcon">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+      <path d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M20,16H6L4,18V4H20"/>
+    </svg>
+  </div>
+
+  <div class="chat-container" id="chatContainer">
+    <div class="chat-fullscreen">
+      <div class="chat-header">
+        <span>Soporte en línea</span>
+        <span class="powered-by">Potenciado por Zendesk</span>
+        <button class="close-chat" id="closeChat">&times;</button>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="bot-message">
+          ¡Hola! ¿En qué puedo ayudarte hoy?
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .chat-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+      z-index: 999;
+    }
+
+    .chat-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .chat-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+
+    .chat-fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: white;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      background: var(--primary);
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .close-chat {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .bot-message {
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      max-width: 80%;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 5px 0;
+      margin-top: 5px;
+    }
+
+    .typing-indicator span {
+      width: 6px;
+      height: 6px;
+      background: #888;
+      border-radius: 50%;
+      animation: typing 1s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+  </style>
+
+  <script>
+    const chatIcon = document.getElementById('chatIcon');
+    const chatContainer = document.getElementById('chatContainer');
+    const closeChat = document.getElementById('closeChat');
+    const messageSound = document.getElementById('messageSound');
+
+    chatIcon.addEventListener('click', () => {
+      chatContainer.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      
+      // Simulate typing after opening
+      setTimeout(() => {
+        const typing = document.querySelector('.typing-indicator');
+        typing.style.display = 'flex';
+        
+        setTimeout(() => {
+          typing.style.display = 'none';
+          messageSound.play();
+          
+          const newMessage = document.createElement('div');
+          newMessage.className = 'bot-message';
+          newMessage.textContent = '¿Te gustaría ver nuestro catálogo de rosas eternas?';
+          newMessage.style.opacity = '0';
+          document.getElementById('chatBody').appendChild(newMessage);
+          
+          requestAnimationFrame(() => {
+            newMessage.style.transition = 'opacity 0.3s';
+            newMessage.style.opacity = '1';
+          });
+        }, 3000);
+      }, 1000);
+    });
+
+    closeChat.addEventListener('click', () => {
+      chatContainer.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    // Close on click outside
+    chatContainer.addEventListener('click', (e) => {
+      if (e.target === chatContainer) {
+        chatContainer.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+  </script>
+
+  <audio id="messageSound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" type="audio/mpeg">
+  </audio>
+
+  <style>
+    .chat-bubble {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+      z-index: 1000;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: showChat 0.3s ease forwards 1s;
+    }
+
+    @keyframes showChat {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-header {
+      background: var(--primary);
+      color: white;
+      padding: 15px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .powered-by {
+      font-size: 0.7em;
+      opacity: 0.8;
+    }
+
+    .chat-body {
+      padding: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .bot-message {
+      background: #f0f0f0;
+      padding: 10px 15px;
+      border-radius: 15px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 5px 0;
+      margin-top: 5px;
+    }
+
+    .typing-indicator span {
+      width: 5px;
+      height: 5px;
+      background: #888;
+      border-radius: 50%;
+      animation: typing 1s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+  </style>
+
+  <script>
+    // Initialize Zendesk
+    window.zESettings = {
+      webWidget: {
+        color: { theme: '#0070ba' },
+        launcher: { badge: { layout: 'image_right' } }
+      }
+    };
+
+    // Chat animation and sound effects
+    document.addEventListener('DOMContentLoaded', function() {
+      const messageSound = document.getElementById('messageSound');
+      const chatBody = document.getElementById('chatBody');
+      
+      setTimeout(() => {
+        const typing = document.querySelector('.typing-indicator');
+        typing.style.display = 'flex';
+        
+        setTimeout(() => {
+          typing.style.display = 'none';
+          messageSound.play();
+          
+          const newMessage = document.createElement('div');
+          newMessage.className = 'bot-message';
+          newMessage.textContent = '¿Te gustaría ver nuestro catálogo de rosas eternas?';
+          newMessage.style.opacity = '0';
+          chatBody.appendChild(newMessage);
+          
+          requestAnimationFrame(() => {
+            newMessage.style.transition = 'opacity 0.3s';
+            newMessage.style.opacity = '1';
+          });
+        }, 3000);
+      }, 2000);
+    });
   </script>
 </body>
 </html>
