@@ -763,12 +763,6 @@
           const productsGrid = document.querySelector('.fullscreen-products-grid');
           const products = [
             {
-              name: 'Ramo de Rosas Rojas Premium',
-              price: '$45.99',
-              image: '/api/placeholder/400/320',
-              category: 'rosas'
-            },
-            {
               name: 'Ramo de Girasoles Alegría',
               price: '$39.99',
               image: '/api/placeholder/400/320',
@@ -790,7 +784,11 @@
 
             productsGrid.innerHTML = filteredProducts.map(product => `
               <div class="product-grid-item" onclick="openProductModal('${product.name}', '${product.price}', '${product.image}', 'Hermoso arreglo floral premium con las mejores flores seleccionadas.')">
-                <img src="${product.image}" alt="${product.name}" class="product-img">
+                <div class="product-image-container">
+                  <img src="${product.image}" alt="${product.name}" class="product-img">
+                  ${product.isNew ? '<span class="product-tag new-tag">Nuevo</span>' : ''}
+                  ${product.discount ? `<span class="product-tag discount-tag">${product.discount}</span>` : ''}
+                </div>
                 <div class="product-info">
                   <h3 class="product-title">${product.name}</h3>
                   <p class="product-price">${product.price}</p>
@@ -1808,10 +1806,36 @@
       transform: translateY(-5px);
     }
 
+    .product-image-container {
+      position: relative;
+      width: 100%;
+    }
+
     .product-grid-item .product-img {
       width: 100%;
       height: 280px;
       object-fit: cover;
+    }
+
+    .product-tag {
+      position: absolute;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .new-tag {
+      background-color: #28a745;
+      top: 10px;
+      left: 10px;
+    }
+
+    .discount-tag {
+      background-color: #dc3545;
+      top: 10px;
+      right: 10px;
     }
 
     .product-grid-item .product-info {
