@@ -1221,15 +1221,79 @@
         </p>
         <h3 class="footer-title">Suscríbete</h3>
         <p>Recibe nuestras ofertas y novedades</p>
-        <form class="newsletter-form">
-          <input type="email" placeholder="Tu email" class="newsletter-input" />
-          <button type="submit" class="newsletter-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <form class="newsletter-form" id="newsletterForm">
+          <input type="email" placeholder="Tu email" class="newsletter-input" required />
+          <button type="submit" class="newsletter-btn" id="submitNewsletter">
+            <svg class="paper-plane" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="22" y1="2" x2="11" y2="13" />
               <polygon points="22 2 15 22 11 13 2 9 22 2" />
             </svg>
           </button>
         </form>
+        <div class="subscription-message" id="subscriptionMessage">
+          ¡Gracias por la suscripción a Rosas Eternas! 🌹
+        </div>
+
+        <style>
+          .newsletter-btn .paper-plane {
+            transition: transform 0.5s ease;
+          }
+          
+          .newsletter-btn.sending .paper-plane {
+            animation: sendPlane 1s ease forwards;
+          }
+          
+          .subscription-message {
+            display: none;
+            opacity: 0;
+            color: var(--accent);
+            margin-top: 15px;
+            font-weight: bold;
+          }
+          
+          .subscription-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+          }
+          
+          @keyframes sendPlane {
+            0% {
+              transform: translate(0, 0) rotate(0);
+            }
+            50% {
+              transform: translate(100px, -100px) rotate(45deg);
+            }
+            100% {
+              transform: translate(200px, -200px) rotate(90deg);
+            }
+          }
+          
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        </style>
+
+        <script>
+          document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitNewsletter');
+            const message = document.getElementById('subscriptionMessage');
+            
+            btn.classList.add('sending');
+            
+            setTimeout(() => {
+              message.classList.add('show');
+              btn.classList.remove('sending');
+            }, 1000);
+          });
+        </script>
       </div>
     </div>
 
